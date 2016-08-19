@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>typing-ru sample</title>
+
+</head>
+<body>
+Q: <div id="question"></div>
+<div id="typed" style="color: red;"></div>
+<div id="answer"></div>
+
+<script type="text/javascript">
+     document.onkeydown = keydown; 
+     var word = "apple is ok";
+     var keycodes = new Array(65,80,80,76,69,32,73,83,32,79,75);
+     var charnum = 0;
+     var maxchar = 11;
+
+      var question = document.getElementById("question");
+      question.innerHTML = word; //Show question
+      var target = document.getElementById("answer");
+      var typed = document.getElementById("typed");
+
+      var typedtxt = new Array(); //Show typed text by user
+
+      //When keyeown
+     function keydown() {
+        if(keycodes[charnum] == event.keyCode) { //good typed
+          target.innerHTML = "OK" + event.keyCode;
+          charnum += 1;
+          addchar = word.substr(0, charnum); //get character typed by user
+          //typedtxt.push();
+          typed.innerHTML = addchar;
+            if (charnum == maxchar){ //when last character
+              target.innerHTML = "Clear" + event.keyCode;
+              charnum = 0;
+            }
+        }  else { //bad typed
+          target.innerHTML = "NG" + event.keyCode;
+        }
+
+      }
+</script>
+
+</body>
+</html>
