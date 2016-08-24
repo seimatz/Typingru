@@ -9,9 +9,14 @@
 Q: <div id="question"></div>
 <div id="typed" style="color: red;"></div>
 <div id="answer"></div>
+Time: <div id="sec"></div>
 
 <script type="text/javascript">
      document.onkeydown = keydown; 
+     window.onload = run();
+
+     var rus = new Array();
+     rus = [["ф","и","с","в","у","а","п","н","ш","о","л","д","ь","т","щ","з","й","к","ы","е","г","м","ц","ч","н","я","э","ж","б","ю","х","ъ"],[65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,186,187,188,190,192,219,220,221,222]];
      var word = "apple is ok";
      var keycodes = new Array(65,80,80,76,69,32,73,83,32,79,75);
      var charnum = 0;
@@ -21,9 +26,29 @@ Q: <div id="question"></div>
       question.innerHTML = word; //Show question
       var target = document.getElementById("answer");
       var typed = document.getElementById("typed");
-
+      var timecount = document.getElementById("timecount");
       var typedtxt = new Array(); //Show typed text by user
 
+      //timecount
+      var startTime,
+      timerId;
+
+      function run() {
+        startTime = (new Date()).getTime(); //set start time
+        timer();
+      }
+
+      function stop() { //stop timecount
+        clearTimeout(timerId);
+      }
+
+      function timer() {
+        document.getElementById('sec').innerHTML = (((new Date()).getTime() - startTime) / 1000).toFixed(2);
+        timerId = setTimeout(function() { 
+          timer(); //0.1 sec ごとにtimer function を実行。これでタイマーが動く。
+        }, 100);
+    
+      }
       //When keyeown
      function keydown() {
         if(keycodes[charnum] == event.keyCode) { //good typed
@@ -35,6 +60,7 @@ Q: <div id="question"></div>
             if (charnum == maxchar){ //when last character
               target.innerHTML = "Clear" + event.keyCode;
               charnum = 0;
+              stop();
             }
         }  else { //bad typed
           target.innerHTML = "NG" + event.keyCode;
