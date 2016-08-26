@@ -12,8 +12,6 @@ Q: <div id="question"></div>
 Time: <div id="sec"></div>
 
 <script type="text/javascript">
-     document.onkeydown = keydown; 
-     window.onload = run();
 
      var rusKeycodes = new Array();
      rusKeycodes = {
@@ -59,9 +57,53 @@ Time: <div id="sec"></div>
       189:"-",
       190:"ю",
       191:".",
-      192:"х",
-      219:"ъ",
-      222:"="};
+      219:"х",
+      221:"ъ",
+      222:"=",
+      32:" ",
+     "s65":"Ф",
+      "s66":"И",
+      "s67":"С",
+      "s68":"В",
+      "s69":"У",
+      "s70":"А",
+      "s71":"П",
+      "s72":"Н",
+      "s73":"Ш",
+      "s74":"О",
+      "s75":"Л",
+      "s76":"Д",
+      "s77":"Ь",
+      "s78":"Т",
+      "s79":"Щ",
+      "s80":"З",
+      "s81":"Й",
+      "s82":"К",
+      "s83":"Ы",
+      "s84":"Е",
+      "s85":"Г",
+      "s86":"М",
+      "s87":"Ц",
+      "s88":"Ч",
+      "s89":"Н",
+      "s90":"Я",
+      "s48":")",
+      "s49":"!",
+      "s222":"?",
+      "s51":"№",
+      "s52":";",
+      "s53":"%",
+      "s54":":",
+      "s56":"*",
+      "s57":"(",
+      "s189":"_",
+      "s187":"+",
+      "s221":"/",
+      "s188":",",
+      "s50":'"'
+      };
+
+
       var rusAlphabet = new Array();
 
 
@@ -74,16 +116,21 @@ Time: <div id="sec"></div>
       //});
 
 
-     var word = "доброеутроменязовутсей"; //問題
+     var word = 'У метро "Дмитровская" обрушился подземный переход'; //問題
      var keycodes = new Array();
      wordtoArray = word.split("");
      wordtoArray.forEach(function(value) { //convert to keycode array
+      if(value=='"'){
+        value = "?"
+      }
         keycodes.push(rusAlphabet[value]);
+      
      });
-
      console.log(keycodes);
+
      var charnum = 0;
-     var maxchar = keycodes.length;
+     var maxchar = keycodes.length; //問題の文字列の長さを測定
+     window.onload = run(); //start count
 
       var question = document.getElementById("question");
       question.innerHTML = word; //Show question
@@ -106,30 +153,44 @@ Time: <div id="sec"></div>
       }
 
       function timer() {
-        document.getElementById('sec').innerHTML = (((new Date()).getTime() - startTime) / 1000).toFixed(2);
+      //  document.getElementById('sec').innerHTML = (((new Date()).getTime() - startTime) / 1000).toFixed(2);
         timerId = setTimeout(function() { 
           timer(); //0.1 sec ごとにtimer function を実行。これでタイマーが動く。
         }, 100);
     
       }
-      //When keyeown
-     function keydown() {
-        if(keycodes[charnum] == event.keyCode) { //good typed
-          target.innerHTML = "OK" + event.keyCode;
+
+
+      document.onkeydown = function(e){
+        var currentKey = e.keyCode;
+        // Shiftキーの押下状態
+        var onShiftkey = e.shiftKey;
+        // Ctrlキーの押下状態
+        var ctrl_key = e.ctrlKey;
+        // Altキーの押下状態
+        var alt_key = e.altKey;
+
+        if(onShiftkey == true){
+          currentKey = "s"+currentKey;
+        }
+
+        if(keycodes[charnum] == currentKey) { //good typed
+          target.innerHTML = "OK" + currentKey;
           charnum += 1;
           addchar = word.substr(0, charnum); //get character typed by user
-          //typedtxt.push();
-          typed.innerHTML = addchar;
+          typed.innerHTML = addchar; 
+
             if (charnum == maxchar){ //when last character
-              target.innerHTML = "Clear" + event.keyCode;
+              target.innerHTML = "Clear" + currentKey;
               charnum = 0;
               stop();
             }
-        }  else { //bad typed
-          target.innerHTML = "NG" + event.keyCode;
+        } else if (currentKey != "s16") { //bad typed
+          target.innerHTML = "NG" + currentKey;
         }
 
-      }
+        };
+
 </script>
 
 </body>
