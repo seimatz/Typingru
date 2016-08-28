@@ -131,9 +131,7 @@ Time: <div id="sec"></div>
 
        var keycodes = new Array();
        var misstype = new Array();
-        for (var key in rusKeycodes){
-           misstype[key] = 0;
-         }
+
        var totalTime = 0;
        var charnum = 0;
        var maxchar = 0; //問題の文字列の長さを測定
@@ -141,10 +139,20 @@ Time: <div id="sec"></div>
        //First question
        newQuestion(qNumber);
 
+       var ngTotal = {};
        //Question renew 
        function newQuestion(qNumber){
          if(qNumber > questions.length -1){ //全問クリア
+          misstype.forEach(function(value){
+            if(!ngTotal[value]){
+              ngTotal[value]=1;
+            }else {
+              ngTotal[value] += 1;
+            }
+          });
+          
           alert('complete'+ 'あなたのタイム合計（秒）:  '+totalTime/100);
+          console.log(ngTotal);
           console.log(misstype);
          }
          charnum = 0;
@@ -212,7 +220,7 @@ Time: <div id="sec"></div>
         } else {//type false
           target.innerHTML = "NG" + currentKey;
           var key = keycodes[charnum];
-          misstype[key] += 1;
+          misstype.push(keycodes[charnum]);
         } 
 
         };
