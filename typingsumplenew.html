@@ -13,8 +13,7 @@ Time: <div id="sec"></div>
 
 <script type="text/javascript">
 
-     var rusKeycodes = new Array();
-     rusKeycodes = {
+     var rusKeycodes = {
       48:"0",
       0:")",
       49:"1",
@@ -111,37 +110,63 @@ Time: <div id="sec"></div>
       32:" "
             };
 
-
       var rusAlphabet = new Array();
-
-        for (var key in rusKeycodes){
+      //キーコードとアルファベットを反転（アルファベットをキーとした配列作成）
+      for (var key in rusKeycodes){
           var newkey = rusKeycodes[key];
           rusAlphabet[newkey] = key;
         }
 
-        //問題文
-     var word = 'Турция нанесла удары по позициям курдов на севере Сирии. Есть жертвы среди мирного населения.';
+      var qNumber= 0;//問題番号初期値
+      //問題文設定。ここにajaxで呼び出す
+      var questions = ['Турция нанесла','Здравствуйте','Привет'];
 
-     var keycodes = new Array();
-     wordtoArray = word.split("");
-     wordtoArray.forEach(function(value) { //convert to keycode array
-        keycodes.push(rusAlphabet[value]);
+
+       //画面描写パーツの定義
+        var question = document.getElementById("question");
+        var target = document.getElementById("answer");
+        var typed = document.getElementById("typed");
+        var timecount = document.getElementById("timecount");
+        var typedtxt = new Array(); //Show typed text by user
+
+       var keycodes = new Array();
+       var charnum = 0;
+       var maxchar = 0; //問題の文字列の長さを測定
+
+       //First question
+       newQuestion(qNumber);
+
+       //Question renew 
+       function newQuestion(qNumber){
+         if(qNumber > questions.length -1){
+          alert('complete');
+         }
+         charnum = 0;
+         maxchar = 0;
+         keycodes = [];
+         typed.innerHTML = "";
+         keycodes = stoKey(questions[qNumber]);
+         maxchar = keycodes.length;
+         question.innerHTML = questions[qNumber]; //Show question
+         run(); //start count
+       }
+
       
-     });
-     console.log(keycodes);
 
-     var charnum = 0;
-     var maxchar = keycodes.length; //問題の文字列の長さを測定
-     window.onload = run(); //start count
+     //問題文をキーコードの配列に変換
+     function stoKey(question){
+         wordtoArray = question.split("");
+         wordtoArray.forEach(function(value) { //convert to keycode array
+            keycodes.push(rusAlphabet[value]);
+          
+         });
+         console.log(keycodes);
+         return keycodes;
+     }
 
-      var question = document.getElementById("question");
-      question.innerHTML = word; //Show question
-      var target = document.getElementById("answer");
-      var typed = document.getElementById("typed");
-      var timecount = document.getElementById("timecount");
-      var typedtxt = new Array(); //Show typed text by user
 
-      //timecount
+      //
+      //timecount タイム計測機能
       var startTime,
       timerId;
 
@@ -155,25 +180,27 @@ Time: <div id="sec"></div>
       }
 
       function timer() {
-        //document.getElementById('sec').innerHTML = (((new Date()).getTime() - startTime) / 1000).toFixed(2);
+        document.getElementById('sec').innerHTML = (((new Date()).getTime() - startTime) / 1000).toFixed(2);
         timerId = setTimeout(function() { 
           timer(); //0.1 sec ごとにtimer function を実行。これでタイマーが動く。
         }, 100);
     
       }
 
+      //キーが押された時の処理
       document.onkeypress = function(e){
          var currentKey = e.keyCode;
         if(keycodes[charnum] == currentKey) { //good typed
           target.innerHTML = "OK" + currentKey;
           charnum += 1;
-          addchar = word.substr(0, charnum); //get character typed by user
+          addchar = questions[qNumber].substr(0, charnum); //get character typed by user
           typed.innerHTML = addchar; 
 
             if (charnum == maxchar){ //when last character
               target.innerHTML = "Clear" + currentKey;
-              charnum = 0;
+              qNumber += 1;
               stop();
+              setTimeout("newQuestion(qNumber)",500);
             }
         } else {//type false
           target.innerHTML = "NG" + currentKey;
